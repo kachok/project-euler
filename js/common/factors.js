@@ -8,3 +8,17 @@ module.exports.factors = function factors(n){
 	
 	return "ok";
 }
+
+module.exports.factorsCount = function factorsCount(n){
+	var count=0;
+	var i;
+
+	for (i=n-1; i>0;i--){
+		if (n % i === 0 ) {
+			//console.log("factor: "+i); 
+			count=count+1;
+		}
+	}
+	
+	return count;
+}
