@@ -17,6 +17,11 @@ function BigInt(str, len){
 	//console.log("len; ", this.len);
 }
 
+BigInt.prototype.clone = function() {
+	var c=new BigInt(this.toString(), this.len);
+	return c;
+}
+
 
 BigInt.prototype.add = function(num2) {
 	//add another big number
@@ -79,6 +84,79 @@ BigInt.prototype.multBy2 = function() {
 	this.updateString();
 }
 
+BigInt.prototype.multByNum = function(n) {
+	//multiply by another integer
+
+	var zero = new BigInt("0",this.len);
+
+	var digits=n.toString();
+	console.log(digits, digits.length);
+	var tens=1;
+	
+	for (var i=digits.length-1;i>=0;i--){
+		console.log("> ",digits[i],tens);
+		console.log("this: ",this.toString());
+		
+		if (digits[i]!=="0") {
+			var c = this.clone();	
+			console.log("c1: ",c.toString());
+			c.multByN(parseInt(digits[i]));
+			console.log("c2: ",c.toString());
+			for (var k=1; k<tens;k++) c.multBy10();
+			console.log("c3: ",c.toString());
+			console.log("this: ",this.toString());
+
+			zero.add(c);
+			console.log("zero: ",zero.toString());
+			console.log("this: ",this.toString());
+		}
+		tens=tens+1;
+	}
+
+	this.num=zero.num;
+	this.len=zero.len;
+	this.str=zero.str;
+
+}
+
+BigInt.prototype.multByN = function(n) {
+	//multiply by number (1 to 9)
+	var i;
+	var subprod=Array.apply(null, new Array(this.len)).map(Number.prototype.valueOf,0);
+	
+	//handling *0
+	if (n===0) {
+		this.updateString();
+		return;
+	}
+
+	for (i=0;i<this.len;i++){
+		subprod[i] = this.num[i]*n;
+	}
+
+	for (i=0;i<this.len-1;i++){
+		if (subprod[i]===0) continue;
+		var r = subprod[i] % 10;
+		var d = (subprod[i]-r) / 10;
+		this.num[i]=r;
+		
+		subprod[i+1]=subprod[i+1]+d;
+	}
+
+	this.updateString();
+}
+
+BigInt.prototype.multBy10 = function() {
+	//multiply by ten
+	var i;
+	
+	for (i=this.len-2;i>=0;i--){
+		this.num[i+1] = this.num[i];
+	}
+	this.num[0]=0;
+	
+	this.updateString();
+}
 
 //updates string representation of number
 BigInt.prototype.updateString = function() {
