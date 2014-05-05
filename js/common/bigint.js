@@ -58,6 +58,27 @@ BigInt.prototype.add = function(num2) {
 
 }
 
+BigInt.prototype.multBy2 = function() {
+	//multiply by another big number
+	var i;
+	var subprod=Array.apply(null, new Array(this.len)).map(Number.prototype.valueOf,0);
+	
+	for (i=0;i<this.len;i++){
+		subprod[i] = this.num[i]*2;
+	}
+
+	for (i=0;i<this.len-1;i++){
+		if (subprod[i]===0) continue;
+		var r = subprod[i] % 10;
+		var d = (subprod[i]-r) / 10;
+		this.num[i]=r;
+		
+		subprod[i+1]=subprod[i+1]+d;
+	}
+
+	this.updateString();
+}
+
 
 //updates string representation of number
 BigInt.prototype.updateString = function() {
